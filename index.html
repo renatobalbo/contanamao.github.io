@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conta na Mão - Controle financeiro simples por WhatsApp</title>
+    <meta name="description" content="Conta na Mão é o assistente financeiro via WhatsApp que facilita o controle das suas finanças pessoais sem complicação. Registre despesas, receitas e acompanhe seu saldo pelo WhatsApp.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .hero-pattern {
+            background-color: #336699;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .phone-mockup {
+            position: relative;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .phone-mockup:before {
+            content: "";
+            display: block;
+            padding-top: 200%;
+            background-color: #222;
+            border-radius: 24px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+        .phone-screen {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            right: 5%;
+            bottom: 5%;
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .phone-header {
+            background-color: #128C7E;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .phone-content {
+            flex: 1;
+            padding: 10px;
+            background-color: #E5DDD5;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .user-message {
+            align-self: flex-end;
+            background-color: #DCF8C6;
+            color:black;
+        }
+        .bot-message {
+            align-self: flex-start;
+            background-color: white;
+            color:black;
+        }
+        .message:after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            top: 0;
+            color:black;
+        }
+        .user-message:after {
+            border-width: 0 10px 10px 0;
+            border-color: transparent #DCF8C6 transparent transparent;
+            right: -8px;
+            color:black;
+        }
+        .bot-message:after {
+            border-width: 0 0 10px 10px;
+            border-color: transparent transparent transparent white;
+            left: -8px;
+            color:black;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased">
+    <!-- Cabeçalho -->
+    <header class="bg-white shadow-md fixed w-full z-10">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <span class="text-3xl font-bold text-blue-600">Conta na Mão</span>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#beneficios" class="text-gray-600 hover:text-blue-600 transition duration-300">Benefícios</a>
+                <a href="#como-funciona" class="text-gray-600 hover:text-blue-600 transition duration-300">Como Funciona</a>
+                <a href="#funcionalidades" class="text-gray-600 hover:text-blue-600 transition duration-300">Funcionalidades</a>
+                <a href="#planos" class="text-gray-600 hover:text-blue-600 transition duration-300">Planos</a>
+                <a href="#contato" class="text-gray-600 hover:text-blue-600 transition duration-300">Contato</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-500 hover:text-blue-600 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 px-4 py-2">
+            <a href="#beneficios" class="block py-2 text-gray-600 hover:text-blue-600">Benefícios</a>
+            <a href="#como-funciona" class="block py-2 text-gray-600 hover:text-blue-600">Como Funciona</a>
+            <a href="#funcionalidades" class="block py-2 text-gray-600 hover:text-blue-600">Funcionalidades</a>
+            <a href="#planos" class="block py-2 text-gray-600 hover:text-blue-600">Planos</a>
+            <a href="#contato" class="block py-2 text-gray-600 hover:text-blue-600">Contato</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-pattern text-white pt-32 pb-20">
+        <div class="container mx-auto px-4 flex flex-col-reverse md:flex-row items-center">
+            <div class="md:w-1/2 md:pr-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Controle suas finanças pelo WhatsApp</h1>
+                <p class="text-xl mb-8">Gerencie seu dinheiro de forma simples, rápida e sem complicação! Registre entradas, saídas e acompanhe seu saldo diretamente no WhatsApp.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="https://wa.me/5500000000000?text=oi" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 text-center flex items-center justify-center">
+                        <i class="fab fa-whatsapp mr-2 text-xl"></i>
+                        Começar agora
+                    </a>
+                    <a href="#como-funciona" class="bg-white text-blue-600 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg transition duration-300 text-center">
+                        Saiba mais
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="phone-header">
+                            Conta na Mão
+                        </div>
+                        <div class="phone-content">
+                            <div class="bot-message message">
+                                Olá! Bem-vindo ao Conta na Mão! 👋 Seu assistente financeiro pessoal.
+                            </div>
+                            <div class="user-message message">
+                                entrada 250,00
+                            </div>
+                            <div class="bot-message message">
+                                Qual carteira?<br />
+                                1 - Carteira principal<br />
+                                2 - Poupança
+                            </div>
+                            <div class="user-message message">
+                                1
+                            </div>
+                            <div class="bot-message message">
+                                Qual categoria?<br />
+                                1 - Salário<br />
+                                2 - Rendimentos<br />
+                                3 - Outros
+                            </div>
+                            <div class="user-message message">
+                                1
+                            </div>
+                            <div class="bot-message message">
+                                Confirme os dados:<br />
+                                Tipo: Crédito<br />
+                                Valor: R$ 250,00<br />
+                                Carteira: 1 - Carteira principal<br />
+                                Categoria: 1 - Salário<br />
+                                <br />
+                                Responda "Ok" para salvar.
+                            </div>
+                            <div class="user-message message">
+                                ok
+                            </div>
+                            <div class="bot-message message">
+                                Movimentação registrada com sucesso! 🎉
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefícios -->
+    <section id="beneficios" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Por que usar o Conta na Mão?</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Simples e Rápido</h3>
+                    <p class="text-gray-600">Registre suas transações em poucos segundos, diretamente pelo WhatsApp, sem precisar baixar mais um aplicativo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Controle Diário</h3>
+                    <p class="text-gray-600">Acompanhe suas finanças em tempo real, registrando gastos e receitas no momento em que acontecem.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Relatórios Detalhados</h3>
+                    <p class="text-gray-600">Receba relatórios personalizados em PDF ou Excel para analisar seus gastos e planejar melhor seu orçamento.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Seguro e Privado</h3>
+                    <p class="text-gray-600">Seus dados são armazenados com segurança e criptografia, garantindo total privacidade das suas informações financeiras.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Para Todos</h3>
+                    <p class="text-gray-600">Ideal para quem quer organizar as finanças pessoais ou pequenos negócios sem complicação.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Gratuito para Usar</h3>
+                    <p class="text-gray-600">Comece a usar agora mesmo sem custo, com opções premium para necessidades mais avançadas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Como Funciona -->
+    <section id="como-funciona" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Como Funciona</h2>
+            <div class="grid md:grid-cols-4 gap-8 items-center">
+                <div class="text-center">
+                    <div class="h-16 w-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-4">1</div>
+                    <h3 class="text-xl font-bold mb-2">Adicione o Bot</h3>
+                    <p class="text-gray-600">Basta iniciar uma conversa com o Conta na Mão pelo WhatsApp</p>
+                </div>
+                <div class="text-center">
+                    <div class="h-16 w-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-4">2</div>
+                    <h3 class="text-xl font-bold mb-2">Digite "entrada" ou "saída"</h3>
+                    <p class="text-gray-600">Para registrar suas transações de forma rápida e intuitiva</p>
+                </div>
+                <div class="text-center">
+                    <div class="h-16 w-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-4">3</div>
+                    <h3 class="text-xl font-bold mb-2">Siga as Instruções</h3>
+                    <p class="text-gray-600">O bot vai guiar você para informar valor, categoria e carteira</p>
+                </div>
+                <div class="text-center">
+                    <div class="h-16 w-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-4">4</div>
+                    <h3 class="text-xl font-bold mb-2">Pronto!</h3>
+                    <p class="text-gray-600">Sua transação está registrada e você pode consultar o saldo a qualquer momento</p>
+                </div>
+            </div>
+            <div class="mt-16 text-center">
+                <a href="https://wa.me/5500000000000?text=oi" class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
+                    <i class="fab fa-whatsapp mr-2"></i> Começar agora
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Funcionalidades -->
+    <section id="funcionalidades" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Principais Funcionalidades</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md flex">
+                    <div class="mr-4 text-blue-600 text-2xl">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Registro de Entradas e Saídas</h3>
+                        <p class="text-gray-600">Registre receitas e despesas de forma rápida, categorizando-as para melhor controle.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex">
+                    <div class="mr-4 text-blue-600 text-2xl">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Múltiplas Carteiras</h3>
+                        <p class="text-gray-600">Organize seu dinheiro em diferentes carteiras (conta corrente, poupança, dinheiro físico, etc).</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex">
+                    <div class="mr-4 text-blue-600 text-2xl">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Categorização Personalizada</h3>
+                        <p class="text-gray-600">Crie e personalize suas próprias categorias para organizar melhor seus gastos e receitas.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex">
+                    <div class="mr-4 text-blue-600 text-2xl">
+                        <i class="fas fa-search-dollar"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Consulta de Saldo</h3>
+                        <p class="text-gray-600">Verifique seu saldo atual a qualquer momento com um simples comando.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex">
+                    <div class="mr-4 text-blue-600 text-2xl">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Relatórios em PDF e Excel</h3>
+                        <p class="text-gray-600">Gere relatórios detalhados para análise das suas finanças em diferentes períodos.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex">
+                    <div class="mr-4 text-blue-600 text-2xl">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Edição e Exclusão</h3>
+                        <p class="text-gray-600">Modifique ou remova transações quando necessário para manter seu controle financeiro preciso.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex">
+                    <div class="mr-4 text-blue-600 text-2xl">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Análise por Categoria</h3>
+                        <p class="text-gray-600">Veja quanto você gasta em cada categoria e identifique oportunidades de economia.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex">
+                    <div class="mr-4 text-blue-600 text-2xl">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Tutoriais Interativos</h3>
+                        <p class="text-gray-600">Aprenda a usar todas as funcionalidades com guias passo a passo diretamente no WhatsApp.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Planos -->
+    <section id="planos" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Planos</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+                    <h3 class="text-xl font-bold mb-2">Gratuito</h3>
+                    <div class="text-blue-600 text-4xl font-bold mb-4">R$ 0</div>
+                    <p class="text-gray-500 mb-6">Ideal para começar a organizar suas finanças</p>
+                    <ul class="mb-8 space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Registros ilimitados de entradas e saídas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>1 carteira</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>5 categorias personalizadas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Consulta de saldo</span>
+                        </li>
+                        <li class="flex items-start text-gray-400">
+                            <i class="fas fa-times text-red-500 mr-2 mt-1"></i>
+                            <span>Relatórios avançados</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/5500000000000?text=oi" class="block w-full bg-blue-600 text-white text-center py-2 rounded-lg hover:bg-blue-700 transition duration-300">Começar</a>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg border-2 border-blue-600 transform md:-translate-y-4">
+                    <div class="bg-blue-600 text-white text-xs font-bold uppercase tracking-wide py-1 px-2 rounded-full inline-block mb-2">Mais popular</div>
+                    <h3 class="text-xl font-bold mb-2">Mensal</h3>
+                    <div class="text-blue-600 text-4xl font-bold mb-4">R$ 19,90</div>
+                    <p class="text-gray-500 mb-6">Acesso a recursos avançados por um mês</p>
+                    <ul class="mb-8 space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Registros ilimitados de entradas e saídas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Carteiras ilimitadas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Categorias ilimitadas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Relatórios em PDF e Excel</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Análise de gastos por categoria</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/5500000000000?text=planos" class="block w-full bg-blue-600 text-white text-center py-2 rounded-lg hover:bg-blue-700 transition duration-300">Assinar</a>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+                    <h3 class="text-xl font-bold mb-2">Anual</h3>
+                    <div class="text-blue-600 text-4xl font-bold mb-4">R$ 199,90</div>
+                    <p class="text-gray-500 mb-6">Economize com o plano anual</p>
+                    <ul class="mb-8 space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Todos os recursos do plano mensal</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Economia de 2 meses</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Suporte prioritário</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Relatórios personalizados</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                            <span>Acesso antecipado a novos recursos</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/5500000000000?text=planos" class="block w-full bg-blue-600 text-white text-center py-2 rounded-lg hover:bg-blue-700 transition duration-300">Assinar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testemunhos -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">O que nossos usuários dizem</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">MS</div>
+                        <div>
+                            <h3 class="font-bold">Maria Silva</h3>
+                            <div class="text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Finalmente um controle financeiro que eu consigo manter! Uso direto no WhatsApp e não preciso abrir outro app. Só digito o valor e pronto, está registrado."</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">JP</div>
+                        <div>
+                            <h3 class="font-bold">João Paulo</h3>
+                            <div class="text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Os relatórios são excelentes! Consigo ver exatamente onde meu dinheiro está indo e identificar onde posso economizar. A assinatura mensal vale cada centavo."</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">CR</div>
+                        <div>
+                            <h3 class="font-bold">Carla Ribeiro</h3>
+                            <div class="text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Uso para controlar as finanças da minha pequena empresa. É prático, rápido e me economiza muito tempo! As categorias personalizadas são perfeitas para meu negócio."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Perguntas Frequentes</h2>
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-lg mb-2">Como começar a usar o Conta na Mão?</h3>
+                    <p class="text-gray-600">Basta enviar uma mensagem para o número do Conta na Mão pelo WhatsApp. O assistente irá guiá-lo pelos primeiros passos e ensinar como usar todas as funcionalidades.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-lg mb-2">Preciso pagar para usar?</h3>
+                    <p class="text-gray-600">Não! O Conta na Mão possui um plano gratuito com funções básicas que já são suficientes para um bom controle financeiro. Os planos pagos oferecem recursos adicionais para quem precisa de análises mais detalhadas.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-lg mb-2">Meus dados financeiros estão seguros?</h3>
+                    <p class="text-gray-600">Sim, a segurança é nossa prioridade. Todos os seus dados são criptografados e armazenados em servidores seguros. Não compartilhamos suas informações com terceiros e seguimos rigorosos protocolos de privacidade.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-lg mb-2">Como funciona a assinatura Premium?</h3>
+                    <p class="text-gray-600">Você pode escolher entre o plano mensal (R$ 19,90) ou anual (R$ 199,90). Ambos dão acesso a todas as funcionalidades premium como carteiras ilimitadas, relatórios avançados e categorias personalizadas.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-lg mb-2">Posso usar em mais de um dispositivo?</h3>
+                    <p class="text-gray-600">Sim! Como o Conta na Mão funciona via WhatsApp, você pode acessar sua conta em qualquer dispositivo onde tenha o WhatsApp instalado, usando o mesmo número de telefone.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-lg mb-2">O que fazer se eu tiver dúvidas ou problemas?</h3>
+                    <p class="text-gray-600">Basta enviar "ajuda" no chat do Conta na Mão ou entrar em contato pelo e-mail suporte@contanamao.com.br. Nossa equipe está pronta para ajudar você.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">Pronto para organizar suas finanças?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Pare de perder tempo com planilhas complicadas. Comece agora mesmo a controlar seu dinheiro pelo WhatsApp!</p>
+            <a href="https://wa.me/5500000000000?text=oi" class="inline-block bg-white text-blue-600 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300">
+                <i class="fab fa-whatsapp mr-2"></i> Começar Gratuitamente
+            </a>
+        </div>
+    </section>
+
+    <!-- Contato -->
+    <section id="contato" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center">Entre em Contato</h2>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold mb-4">Envie-nos uma mensagem</h3>
+                    <form>
+                        <div class="mb-4">
+                            <label for="name" class="block text-gray-700 mb-2">Nome</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-gray-700 mb-2">E-mail</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="block text-gray-700 mb-2">Mensagem</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">Enviar Mensagem</button>
+                    </form>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold mb-4">Informações de Contato</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="text-blue-600 text-xl mr-4">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">WhatsApp</h4>
+                                <p class="text-gray-600">(00) 00000-0000</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="text-blue-600 text-xl mr-4">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">E-mail</h4>
+                                <p class="text-gray-600">contato@contanamao.com.br</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="text-blue-600 text-xl mr-4">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Horário de Atendimento</h4>
+                                <p class="text-gray-600">Segunda a Sexta: 9h às 18h</p>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <h4 class="font-bold mb-2">Nos siga</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 text-2xl">
+                                    <i class="fab fa-facebook"></i>
+                                </a>
+                                <a href="#" class="text-blue-600 hover:text-blue-800 text-2xl">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="text-blue-600 hover:text-blue-800 text-2xl">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="text-blue-600 hover:text-blue-800 text-2xl">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Conta na Mão</h3>
+                    <p class="text-gray-400">Seu assistente financeiro pessoal via WhatsApp. Controle suas finanças de forma simples e eficiente.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Links Rápidos</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#beneficios" class="text-gray-400 hover:text-white transition duration-300">Benefícios</a></li>
+                        <li><a href="#como-funciona" class="text-gray-400 hover:text-white transition duration-300">Como Funciona</a></li>
+                        <li><a href="#funcionalidades" class="text-gray-400 hover:text-white transition duration-300">Funcionalidades</a></li>
+                        <li><a href="#planos" class="text-gray-400 hover:text-white transition duration-300">Planos</a></li>
+                        <li><a href="#contato" class="text-gray-400 hover:text-white transition duration-300">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Política de Privacidade</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Newsletter</h3>
+                    <p class="text-gray-400 mb-2">Receba dicas de finanças e novidades:</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Seu e-mail" class="px-4 py-2 rounded-l-lg focus:outline-none flex-grow">
+                        <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-lg transition duration-300">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400">&copy; 2025 Conta na Mão. Todos os direitos reservados.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Menu móvel
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Fechar menu ao clicar em um link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // Scroll suave para links de âncora
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80, // Ajuste para compensar o cabeçalho fixo
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
